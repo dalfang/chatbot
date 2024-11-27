@@ -1,6 +1,7 @@
 import { fileFromPath } from "openai";
 import { completion, generateEmbedding } from "./embeddings.js";
 import supabase from "./supabase.js";
+import { parseExpoDocs } from "./docs-parser.js";
 
 //prompt
 
@@ -30,14 +31,22 @@ const runPrompt = async (query) => {
     match_threshold: 0.3,
     match_count: 2,
   });
-  console.log(error);
-  console.log(data);
 
-  const filledPrompt = buildFullPrompt(query, "");
+  const docs = await Promise.all(data.map((doc) => parseExpoDocs(doc.id)));
+  const docsBoddies = docs.map((doc) => doc.body);
+  const contents = "".concat(...docsBoddies);
+  //console.log(contents);
+
+  //console.log(docs);
+
+  //console.log(error);
+  //console.log(data);
+
+  const filledPrompt = buildFullPrompt(query, "contents");
   console.log(filledPrompt);
 
   const answer = await completion(filledPrompt);
   console.log(answer);
 };
 
-runPrompt("How to deploy ?");
+runPrompt("How to deploy expo?");

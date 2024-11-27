@@ -1,7 +1,7 @@
 import slugs from "./slugs.js";
-import fm from "front-matter";
 import { generateEmbedding } from "./embeddings.js";
 import supabase from "./supabase.js";
+import { parseExpoDocs } from "./docs-parser.js";
 
 // Retrieve docs
 const parseExpoDocs = async (slug) => {
